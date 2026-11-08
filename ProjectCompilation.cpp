@@ -40,6 +40,8 @@ void insertionSort(int arr[], int size);										// Insertionsort function for 
 
 //============ Finals Compilation ==============
 void act8();
+void act9();
+
 
 // Utility Function
 void divider();
@@ -144,6 +146,9 @@ int main(){
 			break;
 		case 13:
 			act8();
+			break;
+		case 14:
+			act9();
 			break;
 	}
 	// End of program
