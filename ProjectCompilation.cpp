@@ -1476,149 +1476,159 @@ void insertionSort(int arr[], int size){
 
 //===================== Finals ============================
 void act8(){
-	
-	int array[4][5];
-    int copiedArray[4][5];
-    int arraySize = 0;
-    int choice, position, number;
+	const int ROW = 4, COL = 5, CAP = ROW * COL;   // 4x5 array, 20 slots
 
-    array = {{123,876,765,543,432},
-				   {213,836,965,643,532},
-				   {113,376,265,143,232}};
+    // Initialized array (15 elements)
+    int arr[ROW][COL] = {
+        {123, 876, 765, 543, 432},
+        {213, 836, 965, 643, 532},
+        {113, 376, 265, 143, 232}
+    };
+    int cpy[ROW][COL];   	  // target array for duplication
+    int size = 15;            // number of filled elements
+    int op, pos, num;
+    int rowPos, colPos;       // row and column entered by the user
 
     do {
-        cout << "\nOriginal Array:" << endl << endl;
-
-        for (int row = 0; row < 3; row++) {
-            for (int column = 0; column < 3; column++) {
-                int index = row * 3 + column;
-
-                if (index < arraySize)
-                    cout << array[row][column] << "\t";
-                else
+        // Print current array; blanks use "-"
+        cout << "\nCurrent Array:\n\n";
+        for (int row = 0; row < ROW; row++) {
+            for (int col = 0; col < COL; col++) {
+                int ind = row * COL + col;           // 1D index of this slot
+                if (ind < size) {
+                    cout << arr[row][col] << "\t";
+                } else {
                     cout << "-\t";
+                }
             }
             cout << endl;
         }
 
-        cout << "\n==== MENU =====" << endl;
-        cout << "1. Insertion" << endl;
-        cout << "2. Deletion" << endl;
-        cout << "3. Duplication" << endl;
-        cout << "4. Exit" << endl;
+        cout << "\n:-----MENU-----:\n";
+        cout << "1. Insertion\n2. Deletion\n3. Duplication\n4. Exit\n";
         cout << "\nEnter your choice: ";
-        cin >> choice;
+        cin >> op;
 
-        switch (choice) {
-            case 1:
-                if (arraySize == 9) {
-                    cout << "\nArray is full. Delete an element first."
-                         << endl;
+        switch (op) {
+            case 1:   // INSERT
+                if (size == CAP) {
+                    cout << "\nArray is full\n";
                     break;
                 }
 
+                // Ask for position
+                cout << "Enter the position (row col), ex. 0 1: ";
+                cin >> rowPos >> colPos;
                 cout << "Enter the number to insert: ";
-                cin >> number;
+                cin >> num;
 
-                cout << "Enter the position (1-"
-                     << arraySize + 1 << "): ";
-                cin >> position;
-
-                if (position < 1 || position > arraySize + 1) {
-                    cout << "\nInvalid position." << endl;
+                // Must be inside the grid
+                if (rowPos < 0 || rowPos >= ROW || colPos < 0 || colPos >= COL) {
+                    cout << "\nInvalid position.\n";
                     break;
                 }
 
-                for (int index = arraySize; index >= position; index--) {
-                    array[index / 3][index % 3] =
-                        array[(index - 1) / 3][(index - 1) % 3];
+                // Convert to 1d
+                pos = rowPos * COL + colPos;
+
+                // Position past the last element: move it left to the first empty slot
+                if (pos > size) {
+                    pos = size;
+                    rowPos = pos / COL;
+                    colPos = pos % COL;
                 }
 
-                array[(position - 1) / 3][(position - 1) % 3] = number;
-                arraySize++;
+                // Move elements 1 index to the right
+                for (int ind = size; ind > pos; ind--) {
+                    arr[ind / COL][ind % COL] = arr[(ind - 1) / COL][(ind - 1) % COL];
+                }
 
-                cout << "\nArray after Insertion:" << endl << endl;
+                arr[rowPos][colPos] = num;   // insert
+                size++;
 
-                for (int index = 0; index < 9; index++) {
-                    if (index < arraySize)
-                        cout << array[index / 3][index % 3] << "\t";
-                    else
-                        cout << "-\t";
-
-                    if ((index + 1) % 3 == 0)
-                        cout << endl;
+                cout << "\nArray after Insertion:\n\n";
+                for (int row = 0; row < ROW; row++) {
+                    for (int col = 0; col < COL; col++) {
+                        int ind = row * COL + col;
+                        if (ind < size) {
+                            cout << arr[row][col] << "\t";
+                        } else {
+                            cout << "-\t";
+                        }
+                    }
+                    cout << endl;
                 }
                 break;
 
-            case 2:
-                if (arraySize == 0) {
-                    cout << "\nArray is empty. Cannot delete." << endl;
+            case 2:   // DELETE
+                if (size == 0) {
+                    cout << "\nArray is empty, can't del \n";
                     break;
                 }
 
-                cout << "Enter the position to delete (1-"
-                     << arraySize << "): ";
-                cin >> position;
+                // Ask for position 
+                cout << "Enter the position to delete (row col), ex. 0 1: ";
+                cin >> rowPos >> colPos;
 
-                if (position < 1 || position > arraySize) {
-                    cout << "\nInvalid position." << endl;
+                // Convert to 1D
+                pos = rowPos * COL + colPos;
+
+                // Must be inside the grid 
+                if (rowPos < 0 || rowPos >= ROW || colPos < 0 || colPos >= COL || pos >= size) {
+                    cout << "\nInvalid position.\n";
                     break;
                 }
 
-                for (int index = position - 1;
-                     index < arraySize - 1; index++) {
-                    array[index / 3][index % 3] =
-                        array[(index + 1) / 3][(index + 1) % 3];
+                // Move elements 1 index to the left
+                for (int ind = pos; ind < size - 1; ind++) {
+                    arr[ind / COL][ind % COL] = arr[(ind + 1) / COL][(ind + 1) % COL];
                 }
 
-                arraySize--;
+                size--;
 
-                cout << "\nArray after Deletion:" << endl << endl;
-
-                for (int index = 0; index < 9; index++) {
-                    if (index < arraySize)
-                        cout << array[index / 3][index % 3] << "\t";
-                    else
-                        cout << "-\t";
-
-                    if ((index + 1) % 3 == 0)
-                        cout << endl;
+                cout << "\nArray after Deletion:\n\n";
+                for (int row = 0; row < ROW; row++) {
+                    for (int col = 0; col < COL; col++) {
+                        int ind = row * COL + col;
+                        if (ind < size) {
+                            cout << arr[row][col] << "\t";
+                        } else {
+                            cout << "-\t";
+                        }
+                    }
+                    cout << endl;
                 }
                 break;
 
-            case 3:
-                for (int row = 0; row < 3; row++) {
-                    for (int column = 0; column < 3; column++) {
-                        copiedArray[row][column] = array[row][column];
+            case 3:   // COPY whole array
+                for (int row = 0; row < ROW; row++) {
+                    for (int col = 0; col < COL; col++) {
+                        cpy[row][col] = arr[row][col];
                     }
                 }
 
-                cout << "\nDuplicated Array:" << endl << endl;
-
-                for (int row = 0; row < 3; row++) {
-                    for (int column = 0; column < 3; column++) {
-                        int index = row * 3 + column;
-
-                        if (index < arraySize){
-                            cout << copiedArray[row][column] << "\t";
-                        } else{
-                        	cout << "-\t";
-						}
-                            
+                cout << "\nDuplicated Array:\n\n";
+                for (int row = 0; row < ROW; row++) {
+                    for (int col = 0; col < COL; col++) {
+                        int ind = row * COL + col;
+                        if (ind < size) {
+                            cout << cpy[row][col] << "\t";
+                        } else {
+                            cout << "-\t";
+                        }
                     }
                     cout << endl;
                 }
                 break;
 
             case 4:
-                cout << "\nProgram ended." << endl;
+                cout << "\nProgram ended.\n";
                 break;
 
             default:
-                cout << "\nInvalid choice." << endl;
+                cout << "\nInvalid choice.\n";
         }
-
-    } while (choice != 4);
+    } while (op != 4);
 }
 
 void act9(){
@@ -1730,7 +1740,7 @@ void act9(){
 
 
 
-//========== Utility function ====================
+//================== Utility function =====================
 void divider(){
-	cout << "\n====================\n";
+	cout << "\n============================================\n";
 }
